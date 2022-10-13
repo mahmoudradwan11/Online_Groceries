@@ -8,7 +8,6 @@ import 'package:online_groceries/shared/base_cubit/states.dart';
 import 'package:online_groceries/shared/components/components.dart';
 import 'package:online_groceries/shared/network/local/cache_helper.dart';
 import 'package:online_groceries/shared/styles/themes.dart';
-
 void main() async {
   //this App is Written by Eng Mahmoud Radwan
   WidgetsFlutterBinding.ensureInitialized();
