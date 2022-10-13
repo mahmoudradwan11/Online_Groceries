@@ -10,6 +10,7 @@ import 'package:online_groceries/shared/network/local/cache_helper.dart';
 import 'package:online_groceries/shared/styles/themes.dart';
 
 void main() async {
+  //this App is Written by Eng Mahmoud Radwan
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
@@ -18,7 +19,6 @@ void main() async {
   await CacheHelper.init();
   runApp(const MyApp());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
