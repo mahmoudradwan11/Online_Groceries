@@ -62,39 +62,46 @@ class Favorite extends StatelessWidget {
         }
     );
   }
-  Widget buildFavoriteItem(Map model,context)=>Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Container(
-        height: 100,
-        width: double.infinity,
-        //color: Colors.blue,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Image(image: AssetImage(model['image']),height: 60,width: 90,),
-            const SizedBox(
-              width: 30,
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-              Text(model['name'],style: const TextStyle(
+  Widget buildFavoriteItem(Map model,context)=>Dismissible(
+    key:Key(model['id'].toString()),
+    onDismissed:(direction)
+    {
+       OnlineCubit.get(context).deleteFavoriteData(id: model['id']);
+    },
+    child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+          height: 100,
+          width: double.infinity,
+          //color: Colors.blue,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Image(image: AssetImage(model['image']),height: 60,width: 90,),
+              const SizedBox(
+                width: 30,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                Text(model['name'],style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 17,
+                    fontFamily: 'Jannah'),),
+                Text(model['size'],style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                    fontFamily: 'Jannah'),)
+              ],),
+              const Spacer(),
+              Text(model['price'],style:const TextStyle(
                   color: Colors.black,
-                  fontSize: 17,
-                  fontFamily: 'Jannah'),),
-              Text(model['size'],style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12,
+                  fontSize: 15,
                   fontFamily: 'Jannah'),)
-            ],),
-            const Spacer(),
-            Text(model['price'],style:const TextStyle(
-                color: Colors.black,
-                fontSize: 15,
-                fontFamily: 'Jannah'),)
-          ],
+            ],
+          ),
         ),
       ),
     ),
