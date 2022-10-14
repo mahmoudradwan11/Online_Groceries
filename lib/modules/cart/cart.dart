@@ -16,176 +16,193 @@ class Cart extends StatelessWidget {
           var cubit = OnlineCubit.get(context);
           var cart = cubit.cart;
           var scaffoldKey = GlobalKey<ScaffoldState>();
-          return Scaffold(
-            backgroundColor: Colors.white,
-            key: scaffoldKey,
-            appBar: AppBar(
-              title: const Text(
-                'My Cart',
-                style: TextStyle(color: Colors.black),
+          if (cart.isEmpty) {
+            return Scaffold(
+              backgroundColor: Colors.white,
+              key: scaffoldKey,
+              appBar: AppBar(
+                title: const Text(
+                  'My Cart',
+                  style: TextStyle(color: Colors.black),
+                ),
+                centerTitle: true,
               ),
-              centerTitle: true,
-            ),
-            body: Column(
-              children: [
-                Container(
-                  color: Colors.grey[200],
-                  height: 1,
-                  width: double.infinity,
+              body:const Center(
+                child: Image(image: AssetImage('images/image 13.png'),),
+              ),
+            );
+          } else {
+            return Scaffold(
+              backgroundColor: Colors.white,
+              key: scaffoldKey,
+              appBar: AppBar(
+                title: const Text(
+                  'My Cart',
+                  style: TextStyle(color: Colors.black),
                 ),
-                Expanded(
-                  child: ListView.separated(
-                      itemBuilder: (context, index) =>
-                          buildCartItem(cart[index], context),
-                      separatorBuilder: (context, index) => builtDivider(),
-                      itemCount: cart.length),
-                ),
-                Container(
-                  child: defButton(
-                      function: () {
-                        scaffoldKey.currentState!
-                            .showBottomSheet((context) => Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(20)),
-                                  height: 350,
-                                  width: double.infinity,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          children: const [
-                                            Text(
-                                              'Checkout',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Spacer(),
-                                            Icon(
-                                              Icons.cancel_outlined,
-                                              size: 30,
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 25,
-                                        ),
-                                        Container(
-                                          height: 1,
-                                          width: double.infinity,
-                                          color: Colors.grey[500],
-                                        ),
-                                        const SizedBox(
-                                          height: 15,
-                                        ),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: const [
-                                            Text(
-                                              'Delivery',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                            Spacer(),
-                                            Text(
-                                              'Select method',
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold),
-                                            )
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 25,
-                                        ),
-                                        Container(
-                                          height: 1,
-                                          width: double.infinity,
-                                          color: Colors.grey[500],
-                                        ),
-                                        const SizedBox(
-                                          height: 15,
-                                        ),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: const [
-                                            Text(
-                                              'Promo Code',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                            Spacer(),
-                                            Text(
-                                              'Discount ',
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold),
-                                            )
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 25,
-                                        ),
-                                        Container(
-                                          height: 1,
-                                          width: double.infinity,
-                                          color: Colors.grey[500],
-                                        ),
-                                        const SizedBox(
-                                          height: 15,
-                                        ),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: const [
-                                            Text(
-                                              'Payment',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey),
-                                            ),
-                                            Spacer(),
-                                            Text(
-                                              'Visa ',
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold),
-                                            )
-                                          ],
-                                        ),
-                                        Spacer(),
-                                        defButton(
-                                            function: () {
-                                              navigateTo(
-                                                  context, const AfterPay());
-                                            },
-                                            text: 'Place',
-                                            heigth: 67)
-                                      ],
-                                    ),
+                centerTitle: true,
+              ),
+              body: Column(
+                children: [
+                  Container(
+                    color: Colors.grey[200],
+                    height: 1,
+                    width: double.infinity,
+                  ),
+                  Expanded(
+                    child: ListView.separated(
+                        itemBuilder: (context, index) =>
+                            buildCartItem(cart[index], context),
+                        separatorBuilder: (context, index) => builtDivider(),
+                        itemCount: cart.length),
+                  ),
+                  Container(
+                    child: defButton(
+                        function: () {
+                          scaffoldKey.currentState!.showBottomSheet((context) =>
+                              Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(20)),
+                                height: 350,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: const [
+                                          Text(
+                                            'Checkout',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Spacer(),
+                                          Icon(
+                                            Icons.cancel_outlined,
+                                            size: 30,
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 25,
+                                      ),
+                                      Container(
+                                        height: 1,
+                                        width: double.infinity,
+                                        color: Colors.grey[500],
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: const [
+                                          Text(
+                                            'Delivery',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.grey),
+                                          ),
+                                          Spacer(),
+                                          Text(
+                                            'Select method',
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          )
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 25,
+                                      ),
+                                      Container(
+                                        height: 1,
+                                        width: double.infinity,
+                                        color: Colors.grey[500],
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: const [
+                                          Text(
+                                            'Promo Code',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.grey),
+                                          ),
+                                          Spacer(),
+                                          Text(
+                                            'Discount ',
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          )
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 25,
+                                      ),
+                                      Container(
+                                        height: 1,
+                                        width: double.infinity,
+                                        color: Colors.grey[500],
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: const [
+                                          Text(
+                                            'Payment',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.grey),
+                                          ),
+                                          Spacer(),
+                                          Text(
+                                            'Visa ',
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          )
+                                        ],
+                                      ),
+                                      Spacer(),
+                                      defButton(
+                                          function: () {
+                                            navigateTo(
+                                                context, const AfterPay());
+                                          },
+                                          text: 'Place',
+                                          heigth: 67)
+                                    ],
                                   ),
-                                ));
-                      },
-                      text: 'Go to Checkout',
-                      heigth: 67,
-                      width: 360,
-                      isUpper: false),
-                )
-              ],
-            ),
-          );
+                                ),
+                              ));
+                        },
+                        text: 'Go to Checkout',
+                        heigth: 67,
+                        width: 360,
+                        isUpper: false),
+                  )
+                ],
+              ),
+            );
+          }
         });
   }
 

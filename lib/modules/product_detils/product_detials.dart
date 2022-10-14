@@ -60,9 +60,14 @@ class ProductDetails extends StatelessWidget {
                               fontFamily: 'Jannah', fontSize: 20),
                         ),
                         const Spacer(),
-                        const Icon(
-                          Icons.favorite_border,
-                          color: Colors.grey,
+                        IconButton(
+                          onPressed:(){
+                            cubit.insertFavorite(name:model.name, size:model.size, price: model.price, image: model.image);
+                          },
+                          icon: const Icon(
+                            Icons.favorite_border,
+                            color: Colors.grey,
+                          ),
                         )
                       ],
                     ),
