@@ -8,6 +8,7 @@ import 'package:online_groceries/shared/base_cubit/states.dart';
 import 'package:online_groceries/shared/components/components.dart';
 import 'package:online_groceries/shared/network/local/cache_helper.dart';
 import 'package:online_groceries/shared/styles/themes.dart';
+
 void main() async {
   //this App is Written by Eng Mahmoud Radwan
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,12 +19,13 @@ void main() async {
   await CacheHelper.init();
   runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => OnlineCubit(),
+      create: (context) => OnlineCubit()..createDatabase(),
       child: BlocConsumer<OnlineCubit, OnlineStates>(
           listener: (context, state) {},
           builder: (context, state) {

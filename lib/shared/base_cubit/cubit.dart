@@ -8,6 +8,7 @@ import 'package:online_groceries/modules/explore/explore.dart';
 import 'package:online_groceries/modules/favorite/favorite.dart';
 import 'package:online_groceries/modules/shop/shop.dart';
 import 'package:online_groceries/shared/base_cubit/states.dart';
+import 'package:sqflite/sqflite.dart';
 
 class OnlineCubit extends Cubit<OnlineStates> {
   OnlineCubit() : super(InitOnlineState());
@@ -55,6 +56,44 @@ class OnlineCubit extends Cubit<OnlineStates> {
         'Diet Coke',
         'Diet Coke are nutritious. Diet Coke may be good for weight loss. Diet Coke may be good for your heart. As part of a healtful and varied diet.',
         '\$1.99',
+        '330ml'),
+  ];
+  List<Exclusive> beverages = [
+    Exclusive(
+        'images/coke zero.png',
+        'Diet Coke',
+        'Diet coke are nutritious. Diet coke may be good for weight loss. Diet coke may be good for your heart. As part of a healtful and varied diet.',
+        '\$1.99',
+        '330ml'),
+    Exclusive(
+        'images/sprite.png',
+        'Sprite can',
+        'Sprite are nutritious. Sprite may be good for weight loss. Sprite may be good for your heart. As part of a healtful and varied diet.',
+        '\$1.50',
+        '330ml'),
+    Exclusive(
+        'images/juice.png',
+        'Apple Juice',
+        'Apple Juice are nutritious. Apple Juice may be good for weight loss. Apple Juice may be good for your heart. As part of a healtful and varied diet.',
+        '\$14.99',
+        '2L'),
+    Exclusive(
+        'images/orange.png',
+        'Orange Juice',
+        'Orange Juice are nutritious. Orange Juice may be good for weight loss. Orange Juice may be good for your heart. As part of a healtful and varied diet.',
+        '\$14.99',
+        '2L'),
+    Exclusive(
+        'images/coca.png',
+        'Coca can',
+        'Coca  are nutritious. Coca may be good for weight loss. Coca may be good for your heart. As part of a healtful and varied diet.',
+        '\$4.99',
+        '330ml'),
+    Exclusive(
+        'images/pespi.png',
+        'Pepsi',
+        'Pepsi are nutritious. Pepsi may be good for weight loss. Pepsi may be good for your heart. As part of a healtful and varied diet.',
+        '\$4.99',
         '330ml'),
   ];
   List<Exclusive> bestSeller = [
@@ -125,6 +164,7 @@ class OnlineCubit extends Cubit<OnlineStates> {
     Cate('images/rice.png', 'Rice'),
     Cate('images/Beverages.png', 'Beverages'),
   ];
+
   void changeIndex(int index) {
     currentIndex = index;
     emit(ChangeIndexScreenState());
@@ -139,4 +179,124 @@ class OnlineCubit extends Cubit<OnlineStates> {
     currentCounter--;
     emit(MinusCounter());
   }
+  Database? database;
+  List<Map> cart = [];
+  List<Map> favorites = [];
+
+  void createDatabase() {
+    openDatabase('Online.db', version: 2, onCreate: (database, version) {
+      print('DataBase Created');
+      database
+          .execute(
+          'create table Cart(id INTEGER PRIMARY KEY,name TEXT , size TEXT , price TEXT,image TEXT)')
+          .then((value) {
+        print('Table 1 Created');
+      }).catchError((error) {
+        print('Error occur : $error');
+      });
+      database
+          .execute(
+          'create table Favorite(id INTEGER PRIMARY KEY,name TEXT , size TEXT , price TEXT,image TEXT)')
+          .then((value) {
+        print('Table 2 Created');
+      }).catchError((error) {
+        print('Error occur : $error');
+      });
+    }, onOpen: (database) {
+      getCartData(database);
+      getFavoriteData(database);
+      print('Database opened');
+    }).then((value) {
+      database = value;
+      emit(CreateDatabaseState());
+    }).catchError((error) {
+      emit(ErrorCreateDatabaseState());
+    });
+  }
+  Future<void> insertCart(
+      {required String name,
+        required String size,
+        required String price,
+        required String image}) async {
+    database!.transaction((txn) {
+      return txn
+          .rawInsert(
+          'INSERT INTO Cart(name,size,price,image) VALUES("$name","$size","$price","$image")')
+          .then((value) {
+        print('$value Inserted Successfully');
+        emit(InsertCartState());
+        getCartData(database);
+        //print()
+      }).catchError((error) {
+        print('Error occur : $error');
+        emit(ErrorInsertCartState());
+      });
+    });
+  }
+
+  void getCartData(database) {
+    cart = [];
+    database!.rawQuery('select * from Cart').then((value) {
+      value.forEach((element) {
+        cart.add(element);
+      });
+      print(cart);
+      emit(GetCartState());
+    }).catchError((error) {
+      print('Error occur no data');
+      emit(ErrorCartState());
+    });
+  }
+
+  void deleteCartData({required int id}) async {
+    await database!
+        .rawDelete('DELETE FROM Cart WHERE id= ?', [id]).then((value) {
+      getCartData(database);
+      emit(DeleteCartDataState());
+    });
+  }
+  Future<void> insertFavorite(
+      {
+        required String name,
+        required String size,
+        required String price,
+        required String image}) async {
+    database!.transaction((txn) {
+      return txn
+          .rawInsert(
+          'INSERT INTO Favorite(name,size,price,image) VALUES("$name","$size","$price","$image")')
+          .then((value) {
+        print('$value Inserted Successfully');
+        emit(InsertFavoriteState());
+        getFavoriteData(database);
+        //print()
+      }).catchError((error) {
+        print('Error occur : $error');
+        emit(ErrorFavoriteInsertDataState());
+      });
+    });
+  }
+
+  void getFavoriteData(database) {
+    favorites= [];
+    database!.rawQuery('select * from Favorite').then((value) {
+      value.forEach((element) {
+        favorites.add(element);
+      });
+      print(favorites);
+      emit(GetFavoriteDataState());
+    }).catchError((error) {
+      print('Error occur no data');
+      emit(ErrorGetFavoriteDataState());
+    });
+  }
+  void deleteFavoriteData({required int id}) async {
+    await database!
+        .rawDelete('DELETE FROM Favorite WHERE id= ?', [id]).then((value) {
+      getFavoriteData(database);
+      emit(DeleteFavoriteDataState());
+    });
+  }
+
+
 }

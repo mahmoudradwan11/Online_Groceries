@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:online_groceries/modules/product_detils/product_detials.dart';
+import 'package:online_groceries/shared/base_cubit/cubit.dart';
 import 'package:online_groceries/shared/styles/colors.dart';
 
 Widget builtDivider() => Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 20),
-  child: Container(
-    color: Colors.white,
-    height: 1.0,
-    width: double.infinity,
-  ),
-);
-Widget logo()=> Stack(
-    children: const [
-      Center(
-        child: Image(
-          image: AssetImage('images/logo.png'),
-        ),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        color: Colors.grey[400],
+        height: 1.0,
+        width: double.infinity,
       ),
-    ],
-  );
+    );
+Widget logo() => Stack(
+      children: const [
+        Center(
+          child: Image(
+            image: AssetImage('images/logo.png'),
+          ),
+        ),
+      ],
+    );
 
 const pVSpace10 = SizedBox(width: 0.0, height: 10.0);
 const pVSpace20 = SizedBox(width: 0.0, height: 20.0);
@@ -27,40 +28,41 @@ const pVSpace30 = SizedBox(width: 0.0, height: 30.0);
 const pHSpace10 = SizedBox(width: 10.0, height: 0.0);
 
 Widget buildTextForm(
-    BuildContext context,
-    double height, {
-      TextEditingController? buttonController,
-      double? width,
-      String? title,
-      double?fontSize = 16.0,
-      Color?color = Colors.black,
-    }) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        title!,
-        style:const TextStyle(fontFamily: 'Jannah',fontSize: 20),
-      ),
-      pVSpace10,
-      Container(
-        height: height,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0),
-          border: Border.all(color: pGray300, width: 1.0),
+  BuildContext context,
+  double height, {
+  TextEditingController? buttonController,
+  double? width,
+  String? title,
+  double? fontSize = 16.0,
+  Color? color = Colors.black,
+}) =>
+    Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title!,
+          style: const TextStyle(fontFamily: 'Jannah', fontSize: 20),
         ),
-        width: MediaQuery.of(context).size.width,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: TextField(
-            controller: buttonController,
-            decoration: const InputDecoration(
-              border: InputBorder.none,
+        pVSpace10,
+        Container(
+          height: height,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.0),
+            border: Border.all(color: pGray300, width: 1.0),
+          ),
+          width: MediaQuery.of(context).size.width,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: TextField(
+              controller: buttonController,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+              ),
             ),
           ),
         ),
-      ),
-    ],
-  );
+      ],
+    );
 Widget textField({
   required TextEditingController controller,
   required TextInputType keyboard,
@@ -100,10 +102,10 @@ void navigateTo(context, widget) =>
     Navigator.push(context, MaterialPageRoute(builder: (context) => widget));
 
 void navigateAndFinish(context, widget) => Navigator.pushAndRemoveUntil(
-  context,
-  MaterialPageRoute(builder: (context) => widget),
+      context,
+      MaterialPageRoute(builder: (context) => widget),
       (Route<dynamic> route) => false,
-);
+    );
 Widget defButton({
   double width = double.infinity,
   double heigth = 40.0,
@@ -139,16 +141,16 @@ Widget textButton({
       onPressed: function,
       child: Text(text),
     );
-void showToast(String message, ToastStates state)=>
-  Fluttertoast.showToast(
-    msg: message,
-    toastLength: Toast.LENGTH_LONG,
-    gravity: ToastGravity.BOTTOM,
-    timeInSecForIosWeb: 5,
-    backgroundColor: chooseToastColor(state),
-    textColor: Colors.white,
-    fontSize: 16.0,
-  );
+void showToast(String message, ToastStates state) => Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 5,
+      backgroundColor: chooseToastColor(state),
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+
 enum ToastStates {
   SUCCESS,
   ERROR,
@@ -171,147 +173,87 @@ Color chooseToastColor(ToastStates state) {
   return color;
 }
 
-Widget buildProductItem(model,context) => InkWell(
-  onTap:(){
-    navigateTo(context, ProductDetails(model: model,));
-  },
-  child:   Container(
-
-    decoration: BoxDecoration(
-
-      color: Colors.grey[100],
-
-      borderRadius: BorderRadius.circular(20),
-
-    ),
-
-    width: 180,
-
-    child: Padding(
-
-      padding: const EdgeInsets.all(8.0),
-
-      child: Column(
-
-        crossAxisAlignment: CrossAxisAlignment.start,
-
-        children: [
-
-          const SizedBox(
-
-            height: 20,
-
-          ),
-
-          Align(
-
-              alignment: AlignmentDirectional.center,
-
-              child: Image(
-
-                image: AssetImage(model.image!),
-
-                height: 84,
-
-              )),
-
-          const SizedBox(
-
-            height: 20,
-
-          ),
-
-          Text(
-
-            model.name!,
-
-            style: const TextStyle(
-
-                color: Colors.black,
-
-                fontSize: 15,
-
-                fontWeight: FontWeight.bold),
-
-          ),
-
-          const SizedBox(
-
-            height: 10,
-
-          ),
-
-          Text(model.size!),
-
-          const Spacer(),
-
-          Padding(
-
-            padding: const EdgeInsets.all(8.0),
-
-            child: Row(
-
-              children: [
-
-                Text(
-
-                  model.price!,
-
-                  style: const TextStyle(
-
-                      fontWeight: FontWeight.bold, fontSize: 16),
-
+Widget buildProductItem(model, context) => InkWell(
+      onTap: () {
+        navigateTo(
+            context,
+            ProductDetails(
+              model: model,
+            ));
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(20),
+        ),
+        width: 180,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 20,
+              ),
+              Align(
+                  alignment: AlignmentDirectional.center,
+                  child: Image(
+                    image: AssetImage(model.image!),
+                    height: 84,
+                  )),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                model.name!,
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(model.size!),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Text(
+                      model.price!,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const Spacer(),
+                    InkWell(
+                      onTap: () {
+                        OnlineCubit.get(context).insertCart(
+                            name: model.name,
+                            size: model.size,
+                            price: model.price,
+                            image: model.image);
+                        showToast('Insert', ToastStates.SUCCESS);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.green,
+                        ),
+                        height: 45,
+                        width: 40,
+                        child: const Icon(
+                          Icons.add,
+                          size: 30,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-
-                const Spacer(),
-
-                InkWell(
-
-                  onTap: () {
-
-                    print('Hello');
-
-                  },
-
-                  child: Container(
-
-                    decoration: BoxDecoration(
-
-                      borderRadius: BorderRadius.circular(10),
-
-                      color: Colors.green,
-
-                    ),
-
-                    height: 45,
-
-                    width: 40,
-
-                    child: const Icon(
-
-                      Icons.add,
-
-                      size: 30,
-
-                      color: Colors.white,
-
-                    ),
-
-                  ),
-
-                )
-
-              ],
-
-            ),
-
-          )
-
-        ],
-
+              )
+            ],
+          ),
+        ),
       ),
-
-    ),
-
-  ),
-);
+    );

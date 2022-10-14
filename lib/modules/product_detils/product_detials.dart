@@ -213,7 +213,14 @@ class ProductDetails extends StatelessWidget {
                       height: 10,
                     ),
                     defButton(
-                      function: () {},
+                      function: () {
+                        cubit.insertCart(
+                            name: model.name,
+                            size: model.size,
+                            price: model.price,
+                            image: model.image);
+                        showToast('Added Successfully', ToastStates.SUCCESS);
+                      },
                       text: 'Add To Basket',
                       isUpper: false,
                       heigth: 67,
