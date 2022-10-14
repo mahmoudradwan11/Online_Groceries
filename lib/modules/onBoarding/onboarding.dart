@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:online_groceries/layout/home.dart';
 import 'package:online_groceries/modules/login/login.dart';
 import 'package:online_groceries/shared/components/components.dart';
+import 'package:online_groceries/shared/components/constants.dart';
 
 class OnBoarding extends StatelessWidget {
-  const OnBoarding({Key? key}) : super(key: key);
+  Widget? widget;
+  OnBoarding({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +67,12 @@ class OnBoarding extends StatelessWidget {
                 ),
                 defButton(
                     function: () {
-                      navigateTo(context,Login());
+                      if (uId != null) {
+                        widget =const Home();
+                      } else {
+                        widget = Login();
+                      }
+                      navigateTo(context,widget);
                     },
                     text: 'Get Started',
                     width: 350,
