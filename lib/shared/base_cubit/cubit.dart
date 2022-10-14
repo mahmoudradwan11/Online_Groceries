@@ -1,13 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:online_groceries/models/Cate/cate.dart';
 import 'package:online_groceries/models/Exclusive%20offers/exclusive.dart';
+import 'package:online_groceries/models/User/user.dart';
 import 'package:online_groceries/modules/account/account.dart';
 import 'package:online_groceries/modules/cart/cart.dart';
 import 'package:online_groceries/modules/explore/explore.dart';
 import 'package:online_groceries/modules/favorite/favorite.dart';
+import 'package:online_groceries/modules/login/login.dart';
 import 'package:online_groceries/modules/shop/shop.dart';
 import 'package:online_groceries/shared/base_cubit/states.dart';
+import 'package:online_groceries/shared/components/components.dart';
+import 'package:online_groceries/shared/components/constants.dart';
+import 'package:online_groceries/shared/network/local/cache_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 class OnlineCubit extends Cubit<OnlineStates> {
@@ -179,6 +185,7 @@ class OnlineCubit extends Cubit<OnlineStates> {
     currentCounter--;
     emit(MinusCounter());
   }
+
   Database? database;
   List<Map> cart = [];
   List<Map> favorites = [];
@@ -188,7 +195,7 @@ class OnlineCubit extends Cubit<OnlineStates> {
       print('DataBase Created');
       database
           .execute(
-          'create table Cart(id INTEGER PRIMARY KEY,name TEXT , size TEXT , price TEXT,image TEXT)')
+              'create table Cart(id INTEGER PRIMARY KEY,name TEXT , size TEXT , price TEXT,image TEXT)')
           .then((value) {
         print('Table 1 Created');
       }).catchError((error) {
@@ -196,7 +203,7 @@ class OnlineCubit extends Cubit<OnlineStates> {
       });
       database
           .execute(
-          'create table Favorite(id INTEGER PRIMARY KEY,name TEXT , size TEXT , price TEXT,image TEXT)')
+              'create table Favorite(id INTEGER PRIMARY KEY,name TEXT , size TEXT , price TEXT,image TEXT)')
           .then((value) {
         print('Table 2 Created');
       }).catchError((error) {
@@ -213,15 +220,16 @@ class OnlineCubit extends Cubit<OnlineStates> {
       emit(ErrorCreateDatabaseState());
     });
   }
+
   Future<void> insertCart(
       {required String name,
-        required String size,
-        required String price,
-        required String image}) async {
+      required String size,
+      required String price,
+      required String image}) async {
     database!.transaction((txn) {
       return txn
           .rawInsert(
-          'INSERT INTO Cart(name,size,price,image) VALUES("$name","$size","$price","$image")')
+              'INSERT INTO Cart(name,size,price,image) VALUES("$name","$size","$price","$image")')
           .then((value) {
         print('$value Inserted Successfully');
         emit(InsertCartState());
@@ -255,16 +263,16 @@ class OnlineCubit extends Cubit<OnlineStates> {
       emit(DeleteCartDataState());
     });
   }
+
   Future<void> insertFavorite(
-      {
-        required String name,
-        required String size,
-        required String price,
-        required String image}) async {
+      {required String name,
+      required String size,
+      required String price,
+      required String image}) async {
     database!.transaction((txn) {
       return txn
           .rawInsert(
-          'INSERT INTO Favorite(name,size,price,image) VALUES("$name","$size","$price","$image")')
+              'INSERT INTO Favorite(name,size,price,image) VALUES("$name","$size","$price","$image")')
           .then((value) {
         print('$value Inserted Successfully');
         emit(InsertFavoriteState());
@@ -278,7 +286,7 @@ class OnlineCubit extends Cubit<OnlineStates> {
   }
 
   void getFavoriteData(database) {
-    favorites= [];
+    favorites = [];
     database!.rawQuery('select * from Favorite').then((value) {
       value.forEach((element) {
         favorites.add(element);
@@ -290,6 +298,7 @@ class OnlineCubit extends Cubit<OnlineStates> {
       emit(ErrorGetFavoriteDataState());
     });
   }
+
   void deleteFavoriteData({required int id}) async {
     await database!
         .rawDelete('DELETE FROM Favorite WHERE id= ?', [id]).then((value) {
@@ -298,5 +307,50 @@ class OnlineCubit extends Cubit<OnlineStates> {
     });
   }
 
+  UserData? userModel;
+  String? name;
+  String? email;
+  String? image;
+  void updateUser({
+    required String name,
+  }) {
+    emit(UserUpdateLoading());
+    UserData model = UserData(
+      name: name,
+      email: userModel!.email,
+      image: image ?? userModel!.image,
+      uid: userModel!.uid,
+    );
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userModel!.uid)
+        .update(model.toMap())
+        .then((value) {
+      getUserData();
+    }).catchError((error) {
+      emit(UserUpdateError());
+    });
+  }
 
+  void getUserData() {
+    FirebaseFirestore.instance.collection('Users').doc(uId).get().then((value) {
+      print(value.data());
+      userModel = UserData.fromJson(value.data()!);
+      name = userModel!.name;
+      image = userModel!.image;
+      email = userModel!.email;
+      emit(GetUserSuccessState());
+    }).catchError((error) {
+      print(error);
+      emit(GetUserErrorState(error.toString()));
+    });
+  }
+
+  void signOut(context) {
+    CacheHelper.removeData(key: 'uId').then((value) {
+      if (value) {
+        navigateAndFinish(context, Login());
+      }
+    });
+  }
 }

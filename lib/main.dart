@@ -22,15 +22,19 @@ void main() async {
   await CacheHelper.init();
   uId = CacheHelper.getData(key: 'uId');
   print('Uid = $uId');
-  runApp(const MyApp(
-  ));
+  runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key,}) : super(key: key);
+  const MyApp({
+    Key? key,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => OnlineCubit()..createDatabase(),
+      create: (context) => OnlineCubit()
+        ..createDatabase()
+        ..getUserData(),
       child: BlocConsumer<OnlineCubit, OnlineStates>(
           listener: (context, state) {},
           builder: (context, state) {
